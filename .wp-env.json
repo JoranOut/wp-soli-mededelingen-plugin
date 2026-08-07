@@ -4,6 +4,8 @@
   "phpVersion": "8.2",
   "plugins": ["."],
   "themes": [],
+  "port": 8892,
+  "testsPort": 8893,
   "env": {
     "development": {
       "config": {
@@ -11,8 +13,8 @@
         "WP_DEBUG_DISPLAY": true,
         "WP_DEBUG_LOG": true,
         "WP_MEMORY_LIMIT": "512M",
-        "WP_SITEURL": "http://localhost:8888",
-        "WP_HOME": "http://localhost:8888"
+        "WP_SITEURL": "http://localhost:8892",
+        "WP_HOME": "http://localhost:8892"
       }
     },
     "tests": {
@@ -21,8 +23,8 @@
         "WP_DEBUG_DISPLAY": true,
         "WP_DEBUG_LOG": true,
         "WP_MEMORY_LIMIT": "512M",
-        "WP_SITEURL": "http://localhost:8889",
-        "WP_HOME": "http://localhost:8889"
+        "WP_SITEURL": "http://localhost:8893",
+        "WP_HOME": "http://localhost:8893"
       }
     }
   }

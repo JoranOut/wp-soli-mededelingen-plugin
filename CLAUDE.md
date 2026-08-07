@@ -56,7 +56,7 @@ Run `npm run build` before committing JS changes.
 ```bash
 npm install
 npm run build          # build src/index.js -> build/
-npm run wp-env:start   # localhost:8888 (admin/password), tests on 8889
+npm run wp-env:start   # localhost:8892 (admin/password), tests on 8893
 npm run test:e2e       # Playwright, see /e2e
 npm run i18n:build     # pot -> mo -> json (requires running wp-env)
 ```
