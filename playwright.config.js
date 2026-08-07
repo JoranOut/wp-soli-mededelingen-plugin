@@ -10,7 +10,7 @@ module.exports = defineConfig({
   workers: 1,
   reporter: [['html', { open: 'never' }]],
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:8889',
+    baseURL: process.env.BASE_URL || 'http://localhost:8893',
     screenshot: 'only-on-failure',
     video: process.env.CI ? 'retain-on-failure' : 'on',
     trace: 'retain-on-failure',
@@ -24,7 +24,7 @@ module.exports = defineConfig({
   ],
   webServer: {
     command: 'npm run wp-env:start',
-    url: process.env.BASE_URL || 'http://localhost:8889',
+    url: process.env.BASE_URL || 'http://localhost:8893',
     // CI pre-starts wp-env in the workflow; always reuse a running instance
     reuseExistingServer: true,
     timeout: 120 * 1000,
