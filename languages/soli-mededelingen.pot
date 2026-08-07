@@ -1,0 +1,87 @@
+# Copyright (C) 2026 Joran Out
+# This file is distributed under the same license as the Soli Mededelingen Plugin plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Soli Mededelingen Plugin 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-soli-mededelingen-plugin\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-07T19:44:58+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: soli-mededelingen\n"
+
+#. Plugin Name of the plugin
+#: wp-soli-mededelingen-plugin.php
+msgid "Soli Mededelingen Plugin"
+msgstr ""
+
+#. Description of the plugin
+#: wp-soli-mededelingen-plugin.php
+msgid "Members-only announcements (mededelingen) post type for Soli sites, usable in the Query Loop block"
+msgstr ""
+
+#. Author of the plugin
+#: wp-soli-mededelingen-plugin.php
+msgid "Joran Out"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:25
+#: build/index.js:1
+msgid "Mededelingen"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:26
+msgid "Mededeling"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:27
+msgid "Add Mededeling"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:28
+msgid "Add New Mededeling"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:29
+msgid "View Mededeling"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:30
+msgid "Edit Mededeling"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:31
+msgid "Insert into Mededeling"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:32
+msgid "Search Mededelingen"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:33
+msgid "No Mededelingen Found"
+msgstr ""
+
+#: includes/class-soli-mededelingen-post-type.php:40
+msgid "Members-only announcements"
+msgstr ""
+
+#: includes/class-soli-mededelingen-visibility.php:80
+msgid "Mededelingen are only visible to members. Please log in to view them."
+msgstr ""
+
+#: includes/class-soli-mededelingen-visibility.php:81
+msgid "Forbidden"
+msgstr ""
+
+#: includes/class-soli-mededelingen-visibility.php:107
+msgid "Mededelingen are only visible to members."
+msgstr ""
+
+#: build/index.js:1
+msgid "Displays the latest mededelingen (members-only announcements)."
+msgstr ""

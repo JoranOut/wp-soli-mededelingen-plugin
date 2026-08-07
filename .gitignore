@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build artifacts (build/ is committed: the GitHub updater installs the
+# branch zip, so built assets must live in the repo)
+*.zip
+
+# Test outputs
+playwright-report/
+test-results/
+artifacts/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude/Playwright MCP
+.claude/
+.playwright-mcp/

@@ -1,0 +1,28 @@
+{
+  "name": "wp-soli-mededelingen-plugin",
+  "version": "0.1.0",
+  "description": "Members-only announcements (mededelingen) post type for Soli sites",
+  "author": "Joran Out",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "wp-env:start": "wp-env start",
+    "wp-env:stop": "wp-env stop",
+    "publish": "npm run build && npm run i18n:build && node ./publish.js",
+    "test": "npm run test:e2e",
+    "test:e2e": "wp-scripts test-playwright",
+    "test:e2e:debug": "wp-scripts test-playwright --debug",
+    "test:e2e:headed": "wp-scripts test-playwright --headed",
+    "i18n:make-pot": "wp-env run cli -- bash -c 'php -d memory_limit=512M /usr/local/bin/wp i18n make-pot wp-content/plugins/wp-soli-mededelingen-plugin wp-content/plugins/wp-soli-mededelingen-plugin/languages/soli-mededelingen.pot --domain=soli-mededelingen --exclude=node_modules,e2e,tests,test-results,src'",
+    "i18n:make-mo": "wp-env run cli -- bash -c 'php -d memory_limit=512M /usr/local/bin/wp i18n make-mo wp-content/plugins/wp-soli-mededelingen-plugin/languages wp-content/plugins/wp-soli-mededelingen-plugin/languages'",
+    "i18n:make-json": "wp-env run cli -- bash -c 'php -d memory_limit=512M /usr/local/bin/wp i18n make-json wp-content/plugins/wp-soli-mededelingen-plugin/languages wp-content/plugins/wp-soli-mededelingen-plugin/languages --no-purge'",
+    "i18n:build": "npm run i18n:make-pot && npm run i18n:make-mo && npm run i18n:make-json"
+  },
+  "devDependencies": {
+    "@wordpress/e2e-test-utils-playwright": "^1.14.0",
+    "@wordpress/env": "^10.14.0",
+    "@wordpress/scripts": "^31.0.0",
+    "archiver": "^7.0.1"
+  }
+}
