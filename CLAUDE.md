@@ -84,3 +84,5 @@ Standard Soli flow (see repo-root CLAUDE.md): version synced in 4 places
 (plugin header, `SOLI_MEDEDELINGEN__PLUGIN_VERSION`, readme.md
 `~Current Version:x.x.x~`, package.json), release branches, nightly builds,
 GitHub updater channels.
+
+<!-- CI smoke test: verifies the auto-merge + required test check flow. -->
