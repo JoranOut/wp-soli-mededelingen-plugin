@@ -18,6 +18,7 @@
       }
     },
     "tests": {
+      "port": 8893,
       "config": {
         "WP_DEBUG": true,
         "WP_DEBUG_DISPLAY": true,

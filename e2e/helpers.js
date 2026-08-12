@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const { expect } = require('@playwright/test');
 
 const PLUGIN_PATH = '/var/www/html/wp-content/plugins/wp-soli-mededelingen-plugin';
 
@@ -41,4 +42,51 @@ async function getRestNonce(page) {
 	return (await response.text()).trim();
 }
 
-module.exports = { wpCli, seedFixtures, loginAsAdmin, getRestNonce };
+/**
+ * WP_DEBUG and WP_DEBUG_DISPLAY are enabled for the tests environment in
+ * .wp-env.json (guarded by debug-mode.spec.js), so PHP diagnostics are printed
+ * into the rendered document. Anything emitted before <html> or inside <head>
+ * is relocated into the body by the HTML parser, so reading the body text
+ * catches diagnostics from any point in the request.
+ *
+ * Fatals and parse errors are never acceptable, wherever they come from.
+ * Warnings, notices and deprecations are scoped to this plugin's own PHP files,
+ * so unrelated WordPress core or theme noise cannot turn CI red.
+ */
+const FATAL_ERROR_PATTERN = /Fatal error|Parse error/i;
+
+/** This plugin's own PHP files: the main file, the two classes, the updater. */
+const PLUGIN_PHP_FILES =
+	'wp-soli-mededelingen-plugin\\.php|class-soli-mededelingen-(?:post-type|visibility)\\.php|updater\\.php';
+
+const PLUGIN_DIAGNOSTIC_PATTERN = new RegExp(
+	'(Warning|Notice|Deprecated):[^\\n]*(' + PLUGIN_PHP_FILES + ')',
+	'i'
+);
+
+/**
+ * Assert the currently loaded page contains no PHP diagnostics.
+ *
+ * @param {import('@playwright/test').Page} page
+ */
+async function expectNoPhpDiagnostics(page) {
+	const url = page.url();
+	const body = await page.locator('body').innerText();
+
+	expect(body, `PHP fatal/parse error rendered by ${url}`).not.toMatch(FATAL_ERROR_PATTERN);
+	expect(
+		body,
+		`PHP warning/notice/deprecation from this plugin rendered by ${url}`
+	).not.toMatch(PLUGIN_DIAGNOSTIC_PATTERN);
+}
+
+module.exports = {
+	wpCli,
+	seedFixtures,
+	loginAsAdmin,
+	getRestNonce,
+	FATAL_ERROR_PATTERN,
+	PLUGIN_PHP_FILES,
+	PLUGIN_DIAGNOSTIC_PATTERN,
+	expectNoPhpDiagnostics,
+};
