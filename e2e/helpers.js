@@ -71,7 +71,18 @@ const PLUGIN_DIAGNOSTIC_PATTERN = new RegExp(
  */
 async function expectNoPhpDiagnostics(page) {
 	const url = page.url();
-	const body = await page.locator('body').innerText();
+	// textContent(), NOT innerText(). innerText() returns *rendered* text and
+	// skips anything hidden (display:none, [hidden], a collapsed panel), so a
+	// diagnostic emitted inside a hidden container never reaches the assertion
+	// and this helper passes vacuously. Measured with one injected error in two
+	// sibling repos: wp-soli-ticket-scanner-plugin (3 specs failed with
+	// textContent, only 2 with innerText) and wp-soli-taken-plugin, where the
+	// injection sat inside display:none (3 failed with textContent, all 5 still
+	// passed with innerText — completely blind). Measured here too: the same
+	// injection wrapped in <div style="display:none"> fails 4 specs with
+	// textContent and 0 with innerText. wp-admin in particular ships large
+	// amounts of markup hidden by default. Do not change this back.
+	const body = await page.locator('body').textContent();
 
 	expect(body, `PHP fatal/parse error rendered by ${url}`).not.toMatch(FATAL_ERROR_PATTERN);
 	expect(
