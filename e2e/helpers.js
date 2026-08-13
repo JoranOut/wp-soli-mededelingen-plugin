@@ -71,7 +71,23 @@ const PLUGIN_DIAGNOSTIC_PATTERN = new RegExp(
  */
 async function expectNoPhpDiagnostics(page) {
 	const url = page.url();
-	// textContent(), NOT innerText(). innerText() returns *rendered* text and
+	// Two reads of the same body, because the two assertions want different
+	// scopes:
+	//
+	// - PLUGIN_DIAGNOSTIC_PATTERN matches within a line ([^\n]*), and wp-admin
+	//   prints large single-line JSON blobs into inline <script>. A string in
+	//   such a blob containing `Warning:` near a plugin path would match and
+	//   turn CI red for nothing. That pattern must NOT see script text, so it
+	//   reads `markup`: a body clone with script/style/template/noscript
+	//   removed. Scoping the read is the fix; loosening the pattern to tolerate
+	//   script noise would blunt the diagnostic itself.
+	// - FATAL_ERROR_PATTERN must see script text. A fatal thrown while an
+	//   inline script is being printed lands inside that <script> node, and a
+	//   stripped clone would lose it. So it reads `full`. `Fatal error` /
+	//   `Parse error` are far less likely to appear in script text than
+	//   `Warning:`.
+	//
+	// textContent, NOT innerText. innerText returns *rendered* text and
 	// skips anything hidden (display:none, [hidden], a collapsed panel), so a
 	// diagnostic emitted inside a hidden container never reaches the assertion
 	// and this helper passes vacuously. Measured with one injected error in two
@@ -82,11 +98,21 @@ async function expectNoPhpDiagnostics(page) {
 	// injection wrapped in <div style="display:none"> fails 4 specs with
 	// textContent and 0 with innerText. wp-admin in particular ships large
 	// amounts of markup hidden by default. Do not change this back.
-	const body = await page.locator('body').textContent();
+	const { full, markup } = await page.evaluate(() => {
+		const clone = document.body.cloneNode(true);
+		clone
+			.querySelectorAll('script, style, template, noscript')
+			.forEach((node) => node.remove());
 
-	expect(body, `PHP fatal/parse error rendered by ${url}`).not.toMatch(FATAL_ERROR_PATTERN);
+		return {
+			full: document.body.textContent || '',
+			markup: clone.textContent || '',
+		};
+	});
+
+	expect(full, `PHP fatal/parse error rendered by ${url}`).not.toMatch(FATAL_ERROR_PATTERN);
 	expect(
-		body,
+		markup,
 		`PHP warning/notice/deprecation from this plugin rendered by ${url}`
 	).not.toMatch(PLUGIN_DIAGNOSTIC_PATTERN);
 }
