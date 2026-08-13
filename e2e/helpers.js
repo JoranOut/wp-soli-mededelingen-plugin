@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const { expect } = require('@playwright/test');
 
 const PLUGIN_PATH = '/var/www/html/wp-content/plugins/wp-soli-mededelingen-plugin';
 
@@ -41,4 +42,62 @@ async function getRestNonce(page) {
 	return (await response.text()).trim();
 }
 
-module.exports = { wpCli, seedFixtures, loginAsAdmin, getRestNonce };
+/**
+ * WP_DEBUG and WP_DEBUG_DISPLAY are enabled for the tests environment in
+ * .wp-env.json (guarded by debug-mode.spec.js), so PHP diagnostics are printed
+ * into the rendered document. Anything emitted before <html> or inside <head>
+ * is relocated into the body by the HTML parser, so reading the body text
+ * catches diagnostics from any point in the request.
+ *
+ * Fatals and parse errors are never acceptable, wherever they come from.
+ * Warnings, notices and deprecations are scoped to this plugin's own PHP files,
+ * so unrelated WordPress core or theme noise cannot turn CI red.
+ */
+const FATAL_ERROR_PATTERN = /Fatal error|Parse error/i;
+
+/** This plugin's own PHP files: the main file, the two classes, the updater. */
+const PLUGIN_PHP_FILES =
+	'wp-soli-mededelingen-plugin\\.php|class-soli-mededelingen-(?:post-type|visibility)\\.php|updater\\.php';
+
+const PLUGIN_DIAGNOSTIC_PATTERN = new RegExp(
+	'(Warning|Notice|Deprecated):[^\\n]*(' + PLUGIN_PHP_FILES + ')',
+	'i'
+);
+
+/**
+ * Assert the currently loaded page contains no PHP diagnostics.
+ *
+ * @param {import('@playwright/test').Page} page
+ */
+async function expectNoPhpDiagnostics(page) {
+	const url = page.url();
+	// textContent(), NOT innerText(). innerText() returns *rendered* text and
+	// skips anything hidden (display:none, [hidden], a collapsed panel), so a
+	// diagnostic emitted inside a hidden container never reaches the assertion
+	// and this helper passes vacuously. Measured with one injected error in two
+	// sibling repos: wp-soli-ticket-scanner-plugin (3 specs failed with
+	// textContent, only 2 with innerText) and wp-soli-taken-plugin, where the
+	// injection sat inside display:none (3 failed with textContent, all 5 still
+	// passed with innerText — completely blind). Measured here too: the same
+	// injection wrapped in <div style="display:none"> fails 4 specs with
+	// textContent and 0 with innerText. wp-admin in particular ships large
+	// amounts of markup hidden by default. Do not change this back.
+	const body = await page.locator('body').textContent();
+
+	expect(body, `PHP fatal/parse error rendered by ${url}`).not.toMatch(FATAL_ERROR_PATTERN);
+	expect(
+		body,
+		`PHP warning/notice/deprecation from this plugin rendered by ${url}`
+	).not.toMatch(PLUGIN_DIAGNOSTIC_PATTERN);
+}
+
+module.exports = {
+	wpCli,
+	seedFixtures,
+	loginAsAdmin,
+	getRestNonce,
+	FATAL_ERROR_PATTERN,
+	PLUGIN_PHP_FILES,
+	PLUGIN_DIAGNOSTIC_PATTERN,
+	expectNoPhpDiagnostics,
+};
