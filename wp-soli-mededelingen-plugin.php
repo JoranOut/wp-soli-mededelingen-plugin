@@ -44,8 +44,13 @@ add_action( 'init', function () {
 			// releases API and overrides this with the release's zip asset.
 			'zip_url'            => 'https://github.com/JoranOut/wp-soli-mededelingen-plugin/releases/latest/download/wp-soli-mededelingen-plugin.zip',
 			'sslverify'          => true,
-			'requires'           => '6.0.0',
-			'tested'             => '6.7.0',
+			// Both ends of the supported range are rewritten at packaging time by
+			// the nightly and release workflows, from the versions the e2e matrix
+			// actually ran against: 'requires' from package.json's
+			// wordpress.requiresAtLeast, 'tested' from wordpress.org's current
+			// release. Do not reformat.
+			'requires'           => '6.9',
+			'tested'             => '7.0.4',
 			'readme'             => 'readme.md',
 		);
 
