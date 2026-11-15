@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@wordpress/e2e-test-utils-playwright": "^1.14.0",
-    "@wordpress/env": "^10.14.0",
+    "@wordpress/env": "^12.1.0",
     "@wordpress/scripts": "^31.0.0",
     "archiver": "^7.0.1"
   }
