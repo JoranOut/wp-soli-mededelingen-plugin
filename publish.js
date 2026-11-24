@@ -60,6 +60,7 @@ archive.glob('**/*', {
         '.gitignore',
         '*.zip',
         'publish.js',
+        'bin/**',
         'src/**',
         'e2e/**',
         'tests/**',
