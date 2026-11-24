@@ -7,7 +7,7 @@
   "scripts": {
     "build": "wp-scripts build",
     "start": "wp-scripts start",
-    "wp-env:start": "wp-env start",
+    "wp-env:start": "node bin/wp-env-start.js",
     "wp-env:stop": "wp-env stop",
     "publish": "npm run build && npm run i18n:build && node ./publish.js",
     "test": "npm run test:e2e",
